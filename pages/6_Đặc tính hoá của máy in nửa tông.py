@@ -11,7 +11,7 @@ W = data['W']
 P = data['P']
 P = np.vstack((W,P))
 yellow = P[:11,:]
-magenta = np.zeros((11,31), np.float64)
+magenta = np.zeros((11,P.shape[1]), dtype=np.float64)
 magenta[0,:] = P[0,:]
 magenta[1,:] = P[11,:]
 magenta[2,:] = P[22,:]
