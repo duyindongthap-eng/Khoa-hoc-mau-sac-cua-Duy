@@ -1,28 +1,32 @@
-import streamlit as st
-import matplotlib.pyplot as plt
-import colour
+import os
+import scipy.io
 import numpy as np
-import scipy
+import streamlit as st
 
-st.set_page_config(layout="wide")
+file_path = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)),
+    'halftone.mat'
+)
 
+if not os.path.exists(file_path):
+    st.error(f"Không tìm thấy file dữ liệu: {file_path}")
+    st.stop()
 
-data = scipy.io.loadmat('halftone.mat')
+data = scipy.io.loadmat(file_path)
 
-W = np.asarray(data['W'])
-P_data = np.asarray(data['P'])
+st.write("Các khóa trong file:", list(data.keys()))
+
+if 'W' not in data or 'P' not in data:
+    st.error("File MAT không có khóa W hoặc P.")
+    st.stop()
+
+W = np.asarray(data['W'], dtype=np.float64)
+P_data = np.asarray(data['P'], dtype=np.float64)
 
 st.write("Kích thước W:", W.shape)
 st.write("Kích thước P gốc:", P_data.shape)
 
 P = np.vstack((W, P_data))
-
-st.write("Kích thước P sau khi ghép:", P.shape)
-
-# Kiểm tra dữ liệu trước khi lấy phổ màu
-if P.ndim != 2 or P.shape[0] < 111:
-    st.error("P không đủ số hàng để tạo magenta.")
-    st.stop()
 
 yellow = P[:11, :].copy()
 magenta = P[np.arange(11) * 11, :].copy()
