@@ -1,35 +1,17 @@
-import os
-import scipy.io
-import numpy as np
 import streamlit as st
+import matplotlib.pyplot as plt
+import colour
+import numpy as np
+import scipy
 
-file_path = os.path.join(
-    os.path.dirname(os.path.dirname(__file__)),
-    'halftone.mat'
-)
+st.set_page_config(layout="wide")
 
-if not os.path.exists(file_path):
-    st.error(f"Không tìm thấy file dữ liệu: {file_path}")
-    st.stop()
-
-data = scipy.io.loadmat(file_path)
-
-st.write("Các khóa trong file:", list(data.keys()))
-
-if 'W' not in data or 'P' not in data:
-    st.error("File MAT không có khóa W hoặc P.")
-    st.stop()
-
-W = np.asarray(data['W'], dtype=np.float64)
-P_data = np.asarray(data['P'], dtype=np.float64)
-
-st.write("Kích thước W:", W.shape)
-st.write("Kích thước P gốc:", P_data.shape)
-
-P = np.vstack((W, P_data))
-
-yellow = P[:11, :].copy()
-magenta = P[np.arange(11) * 11, :].copy()
+data = scipy.io.loadmat('halftone.mat')
+W = data['W']
+P = data['P']
+P = np.vstack((W,P))
+yellow = P[:11,:]
+magenta = np.zeros((11,31), np.float64)
 magenta[0,:] = P[0,:]
 magenta[1,:] = P[11,:]
 magenta[2,:] = P[22,:]
