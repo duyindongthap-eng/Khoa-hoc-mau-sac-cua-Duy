@@ -7,11 +7,18 @@ import scipy
 st.set_page_config(layout="wide")
 
 data = scipy.io.loadmat('halftone.mat')
+
 W = data['W']
-P = data['P']
-P = np.vstack((W,P))
-yellow = P[:11,:]
-magenta = np.zeros((11,P.shape[1]), dtype=np.float64)
+P_data = data['P']
+
+# Ghép phổ nền trắng vào đầu dữ liệu
+P = np.vstack((W, P_data))
+
+# Lấy 11 phổ màu vàng
+yellow = P[:11, :].copy()
+
+# Lấy 11 phổ màu tím theo các chỉ số 0, 11, 22, ..., 110
+magenta = P[np.arange(0, 111, 11), :].copy()
 magenta[0,:] = P[0,:]
 magenta[1,:] = P[11,:]
 magenta[2,:] = P[22,:]
