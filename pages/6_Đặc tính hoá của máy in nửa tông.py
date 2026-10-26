@@ -6,19 +6,26 @@ import scipy
 
 st.set_page_config(layout="wide")
 
+
 data = scipy.io.loadmat('halftone.mat')
 
-W = data['W']
-P_data = data['P']
+W = np.asarray(data['W'])
+P_data = np.asarray(data['P'])
 
-# Ghép phổ nền trắng vào đầu dữ liệu
+st.write("Kích thước W:", W.shape)
+st.write("Kích thước P gốc:", P_data.shape)
+
 P = np.vstack((W, P_data))
 
-# Lấy 11 phổ màu vàng
-yellow = P[:11, :].copy()
+st.write("Kích thước P sau khi ghép:", P.shape)
 
-# Lấy 11 phổ màu tím theo các chỉ số 0, 11, 22, ..., 110
-magenta = P[np.arange(0, 111, 11), :].copy()
+# Kiểm tra dữ liệu trước khi lấy phổ màu
+if P.ndim != 2 or P.shape[0] < 111:
+    st.error("P không đủ số hàng để tạo magenta.")
+    st.stop()
+
+yellow = P[:11, :].copy()
+magenta = P[np.arange(11) * 11, :].copy()
 magenta[0,:] = P[0,:]
 magenta[1,:] = P[11,:]
 magenta[2,:] = P[22,:]
